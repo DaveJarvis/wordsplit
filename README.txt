@@ -9,7 +9,7 @@ human-readable equivalent text.
 
 Word Split takes the following input files:
   - a probability lexicon, one word and probability per line (CSV format)
-	- a list of conjoined phrases, one per line
+  - a list of conjoined phrases, one per line
 
 Word Split will use the lexicon to separate the list of conjoined phrases.
 The resulting segmented phrases are written to standard out.
@@ -25,10 +25,10 @@ This release includes:
 
   - version.properties         Build version
   - build.xml                  Build instructions for Ant
-	- demos                      Example lexicons and conjoined files
-	- scripts                    Corpus and lexicon helper scripts
-	- scripts/tally-corpus.sh    Creates a tally lexicon from a corpus.
-	- scripts/probability.awk    Creates a probability lexicon from tallies
+  - demos                      Example lexicons and conjoined files
+  - scripts                    Corpus and lexicon helper scripts
+  - scripts/tally-corpus.sh    Creates a tally lexicon from a corpus.
+  - scripts/probability.awk    Creates a probability lexicon from tallies
 
                  ---------------------------------------------
                                   Requirements
@@ -37,7 +37,7 @@ This release includes:
 The following software packages are required to compile and run Word Split:
 
   - Java version 1.6 (or greater)
-	- Ant version 1.8.2 (or greater)
+  - Ant version 1.8.2 (or greater)
 
                  ---------------------------------------------
                                   Installation
