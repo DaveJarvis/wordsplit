@@ -29,8 +29,7 @@ public class Main {
   /**
    * Default constructor.
    */
-  public Main() {
-  }
+  public Main() { }
 
   private static void out( final String s ) {
     System.out.println( s );
@@ -47,15 +46,13 @@ public class Main {
       try {
         ts.split( new File( args[ 0 ] ), new File( args[ 1 ] ) );
       } catch( final Exception e ) {
-        System.err.println( "Error: " + e.getMessage() );
         e.printStackTrace();
       }
     }
     else {
-      out( "com.com.whitemagicsoftware.wordsplit.Main <lexicon> <conjoined>" );
+      out( Main.class.getCanonicalName() + " <lexicon> <conjoined>" );
       out( "<lexicon>   - CSV file: word,probability" );
       out( "<conjoined> - Text file" );
     }
   }
 }
-

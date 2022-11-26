@@ -20,23 +20,24 @@
  */
 package com.whitemagicsoftware.wordsplit;
 
+import java.util.AbstractMap;
 import java.util.ArrayList;
-import java.util.List;
+import java.util.Map;
 
 class CombinationsTest {
   /**
    * Tests the class.
    */
-  public static void main( String[] args ) {
-    List<String> list = new ArrayList<>();
-    PrintVisitor pv = new PrintVisitor();
+  public static void main( final String[] args ) {
+    final var list = new ArrayList<Map.Entry<String, Double>>();
+    final var pv = new PrintVisitor();
 
-    list.add( "a" );
-    list.add( "b" );
-    list.add( "c" );
-    list.add( "d" );
+    list.add( new AbstractMap.SimpleEntry<>( "a", 0.5 ) );
+    list.add( new AbstractMap.SimpleEntry<>( "a", 0.6 ) );
+    list.add( new AbstractMap.SimpleEntry<>( "a", 0.7 ) );
+    list.add( new AbstractMap.SimpleEntry<>( "a", 0.8 ) );
 
-    Combinations combinations = new Combinations( pv );
+    final var combinations = new Combinations( pv );
     combinations.root( list );
   }
 }
