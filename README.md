@@ -28,8 +28,8 @@ This release includes:
 
 The following software packages are required to compile and run Word Split:
 
-  - Java version 1.6 (or greater)
-  - Ant version 1.8.2 (or greater)
+  - Java 11 (or newer)
+  - Ant 1.8.2 (or newer)
 
 # Building
 
@@ -41,4 +41,5 @@ Build the software as follows:
 
 After building, run the software on Linux (or MacOS) as follows:
 
-  ./run.sh
+    ./run.sh
+
