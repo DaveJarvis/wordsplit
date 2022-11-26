@@ -1,8 +1,28 @@
+/* Copyright 2022 White Magic Software, Ltd.
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in
+ * all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
+ */
 package com.whitemagicsoftware.wordsplit;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 /**
  * An almost generic class for generating all possible combinations of
@@ -10,10 +30,10 @@ import java.util.Map;
  */
 @SuppressWarnings("unchecked")
 public class Combinations {
-  private Visitor visitor;
-  private List<SegmentAnalysis> analysis = new ArrayList<SegmentAnalysis>();
-
   private final static int MAX_DEPTH = 22;
+
+  private Visitor visitor;
+  private final List<SegmentAnalysis> analysis = new ArrayList<>();
 
   /**
    * @param visitor - The class used to examine each possible text segment.
@@ -39,7 +59,7 @@ public class Combinations {
    */
   private void root( List prefix, List remain, int depth ) {
     if( remain.size() > 0 && depth < MAX_DEPTH ) {
-      List combination = new ArrayList( prefix.size() + 1 );
+      List combination = new ArrayList<>( prefix.size() + 1 );
       combination.addAll( prefix );
       combination.add( remain.get( 0 ) );
 
@@ -73,19 +93,4 @@ public class Combinations {
     getAnalysis().add( sa );
   }
 
-  /**
-   * Tests the class.
-   */
-  public static void main( String[] args ) {
-    List<String> list = new ArrayList<String>();
-    PrintVisitor pv = new PrintVisitor();
-
-    list.add( "a" );
-    list.add( "b" );
-    list.add( "c" );
-    list.add( "d" );
-
-    Combinations combinations = new Combinations( pv );
-    combinations.root( list );
-  }
 }

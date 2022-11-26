@@ -1,3 +1,24 @@
+/* Copyright 2022 White Magic Software, Ltd.
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in
+ * all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
+ */
 package com.whitemagicsoftware.wordsplit;
 
 import java.util.List;
@@ -8,14 +29,14 @@ import java.util.Map;
  * These details allow the TextSegmenter class to determine whether or not
  * the solution is the most likely.
  */
-@SuppressWarnings("unchecked")
 public class SegmentAnalysis {
+  private final List<Map.Entry<String, Double>> words;
+
   private int wordsUsed;
-  private List<Map.Entry> words;
   private String remaining;
 
-  public SegmentAnalysis( List<Map.Entry> words ) {
-    setWords( words );
+  public SegmentAnalysis( final List<Map.Entry<String, Double>> words ) {
+    this.words = words;
   }
 
   /**
@@ -26,8 +47,8 @@ public class SegmentAnalysis {
    * @return The given parameter with spaces in between each word.
    */
   public StringBuilder apply( String concat ) {
-    for( Map.Entry entry : getWords() ) {
-      String word = (String)(entry.getKey());
+    for( final var entry : getWords() ) {
+      final var word = entry.getKey();
       concat = concat.replaceFirst( word, " " + word + " " );
     }
 
@@ -48,11 +69,11 @@ public class SegmentAnalysis {
    *
    * @return The value of s with its whitespace normalised.
    */
-  private String normalise( String s ) {
+  private String normalise( final String s ) {
     return s.replaceAll( "\\b\\s{2,}\\b", " " ).trim();
   }
 
-  public void setRemaining( String remaining ) {
+  public void setRemaining( final String remaining ) {
     this.remaining = normalise( remaining );
   }
 
@@ -64,7 +85,7 @@ public class SegmentAnalysis {
     return getWords().size();
   }
 
-  public void setWordsUsed( int wordsUsed ) {
+  public void setWordsUsed( final int wordsUsed ) {
     this.wordsUsed = wordsUsed;
   }
 
@@ -81,18 +102,14 @@ public class SegmentAnalysis {
   public double getProbability() {
     double probability = 1;
 
-    for( Map.Entry entry : getWords() ) {
-      probability *= ((Double)(entry.getValue())).doubleValue();
+    for( final var entry : getWords() ) {
+      probability *= entry.getValue();
     }
 
     return probability * (getWordsUsed() / getWordCount());
   }
 
-  private void setWords( List<Map.Entry> words ) {
-    this.words = words;
-  }
-
-  private List<Map.Entry> getWords() {
+  private List<Map.Entry<String, Double>> getWords() {
     return this.words;
   }
 }

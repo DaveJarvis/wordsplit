@@ -6,7 +6,7 @@
   name="build.number"
   value="${build.major.number}.${build.minor.number}.${build.revision.number}" />
 <property name="dir.build"  value="build" />
-<property name="dir.source" value="src" />
+<property name="dir.source" value="src/main" />
 
 <property name="file.jar"   value="wordsplit.jar" />
 
@@ -29,7 +29,7 @@
 </target>
 
 <target name="compile">
-  <antcall target="revision"></antcall>
+  <antcall target="revision"/>
   <mkdir dir="${dir.build}" />
   <javac
     includeantruntime="false"
@@ -52,7 +52,7 @@
 </target>
 
 <target name="dist">
-  <antcall target="minor"></antcall>
+  <antcall target="minor"/>
 </target>
 
 <target name="revision">
@@ -85,4 +85,3 @@
 </target>
 
 </project>
-
