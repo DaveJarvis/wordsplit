@@ -39,6 +39,6 @@ Build the software as follows:
 
 # Running
 
-After building, run the software as follows:
+After building, run the software on Linux (or MacOS) as follows:
 
-  
+  ./run.sh

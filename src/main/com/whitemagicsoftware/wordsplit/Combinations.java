@@ -61,16 +61,13 @@ public class Combinations {
     final List<Map.Entry<String, Double>> remain,
     final int depth ) {
     if( !remain.isEmpty() && depth < MAX_DEPTH ) {
-      final var combination =
-        new ArrayList<Map.Entry<String, Double>>( prefix.size() + 1 );
+      final var combination = createArray( prefix.size() + 1 );
       combination.addAll( prefix );
       combination.add( remain.get( 0 ) );
-
       addAnalysis( getVisitor().visit( combination ) );
 
-      final var r = new ArrayList<Map.Entry<String, Double>>( remain.size() );
+      final var r = createArray( remain.size() );
       r.addAll( remain.subList( 1, remain.size() ) );
-
       root( combination, r, depth + 1 );
       root( prefix, r, depth + 1 );
     }
@@ -90,5 +87,9 @@ public class Combinations {
 
   private void addAnalysis( final SegmentAnalysis sa ) {
     getAnalysis().add( sa );
+  }
+
+  private static List<Map.Entry<String, Double>> createArray( final int size ) {
+    return new ArrayList<>( size );
   }
 }

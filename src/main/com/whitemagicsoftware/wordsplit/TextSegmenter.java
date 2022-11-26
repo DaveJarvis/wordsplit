@@ -23,6 +23,8 @@ package com.whitemagicsoftware.wordsplit;
 import java.io.*;
 import java.util.*;
 
+import static java.nio.file.Files.*;
+
 /**
  * Splits concatenated text into a sentence.
  */
@@ -35,63 +37,29 @@ public class TextSegmenter {
   /**
    * Words and frequencies.
    */
-  private final Map<String, Double> dictionary = new TreeMap<>();
+  private final Map<String, Double> mHeuristics;
 
   /**
    * List of concatenated words to split.
    */
-  private final List<String> concat = new ArrayList<>();
+  private final List<String> mConjoined;
 
   /**
    * Default constructor.
    */
-  public TextSegmenter() { }
-
-  /**
-   * Helper method.
-   */
-  public void split( File lexicon, File concat )
+  public TextSegmenter( final File heuristics, final File conjoined )
     throws IOException {
-    BufferedReader lex = new BufferedReader(
-      new InputStreamReader( new FileInputStream( lexicon ) ) );
-    BufferedReader col = new BufferedReader(
-      new InputStreamReader( new FileInputStream( concat ) ) );
-
-    split( lex, col );
-
-    lex.close();
-    col.close();
-  }
-
-  /**
-   * Splits the text. Callers must close the streams.
-   */
-  public void split( BufferedReader lexicon, BufferedReader concat )
-    throws IOException {
-    loadLexicon( lexicon );
-    loadConcat( concat );
-    split();
+    mHeuristics = loadHeuristics( heuristics );
+    mConjoined = loadConjoined( conjoined );
   }
 
   /**
    * Iterates over the concatenated text, splitting each concatenated
-   * String into English words.
+   * string into English words.
    */
-  private void split() {
-    for( String concat : getConcat() ) {
-      System.out.printf( "%s,%s\n", concat, segments( concat ) );
-    }
-  }
-
-  /**
-   * Returns a number between 0 and 1 that represents how often the word is
-   * used relative to all the other words in the lexicon.
-   */
-  private double getProbability( String s ) {
-    try {
-      return getDictionary().get( s );
-    } catch( Exception e ) {
-      return 0.0;
+  public void run() {
+    for( final var text : mConjoined ) {
+      System.out.printf( "%s,%s\n", text, segments( mHeuristics, text ) );
     }
   }
 
@@ -103,21 +71,18 @@ public class TextSegmenter {
    * @param concat - The phrase without spaces to split into words.
    * @return The concat text with spaces.
    */
-  private String segments( String concat ) {
+  private String segments( Map<String, Double> heuristics, String concat ) {
     final var length = concat.length();
     final var words = new ArrayList<Map.Entry<String, Double>>();
 
     // Put all the words that exist in the string into a map.
-    //
     for( int i = 0; i < length; i++ ) {
       for( int j = 0; j < length - i; j++ ) {
-        // Word and probability from the lexicon.
-        //
+        // Word and probability from the heuristics.
         String w = concat.substring( j, length - i );
-        double p = getProbability( w );
+        double p = heuristics.getOrDefault( w, 0.0 );
 
         // Retain words that comprise the concatenated string in order.
-        //
         if( p > 0 ) {
           words.add( 0, new AbstractMap.SimpleEntry<>( w, p ) );
         }
@@ -139,13 +104,13 @@ public class TextSegmenter {
       wordsUsed++;
 
       if( index == 0 ) {
-        // The word from the lexicon matched the beginning of
+        // The word from the heuristics matched the beginning of
         // the concatenated string. Track the word within "result".
         result.append( word ).append( ' ' );
         joined.delete( 0, wlen );
       }
       else if( index > 0 ) {
-        // The word from the lexicon matched the concatenated string,
+        // The word from the heuristics matched the concatenated string,
         // but not at the beginning.
         result.append( joined.substring( 0, index ) ).append( ' ' );
         joined.delete( 0, index );
@@ -181,7 +146,7 @@ public class TextSegmenter {
       // count (after splitting and removing the most probable words).
       // This loop primarily reduces the candidates based on whether all
       // the words in one particular combination of words were used and
-      // each of those words exists in the lexicon.
+      // each of those words exists in the heuristics.
       for( SegmentAnalysis sa : saList ) {
         if( sa.matchedAllWords() ) {
           int saLength = sa.length();
@@ -215,7 +180,7 @@ public class TextSegmenter {
       double maxProbability = Double.MIN_VALUE;
 
       // Find the solution with the highest probability. The probability
-      // is calculated using the probabilities from the lexicon (which
+      // is calculated using the probabilities from the heuristics (which
       // are, in turn, used by the SegmentAnalysis instance).
       for( final var sa : saList ) {
         double probability = sa.getProbability();
@@ -264,15 +229,12 @@ public class TextSegmenter {
    * Loads all the words and word probability from the dictionary. Words
    * are separated from the probability by a comma.
    */
-  private void loadLexicon( BufferedReader lexiconData )
+  private Map<String, Double> loadHeuristics( final File heuristicsData )
     throws IOException {
-    String line;
-    final var dictionary = getDictionary();
+    final var dictionary = new TreeMap<String, Double>();
 
-    dictionary.clear();
-
-    while( (line = lexiconData.readLine()) != null ) {
-      String[] lex = line.toLowerCase().split( "," );
+    readAllLines(heuristicsData.toPath()).forEach( line -> {
+      final var lex = line.toLowerCase().split( "," );
 
       if( lex[ 0 ].length() >= MIN_LEX_LENGTH ) {
         try {
@@ -281,46 +243,30 @@ public class TextSegmenter {
           dictionary.put( lex[ 0 ], getDefaultProbability() );
         }
       }
-    }
+    });
+
+    return dictionary;
   }
 
   /**
    * Inserts the lines of concatenated text into the internal list.
    */
-  private void loadConcat( BufferedReader concatData )
+  private List<String> loadConjoined( final File conjoinedData )
     throws IOException {
-    String line;
-    final var concat = getConcat();
+    final var conjoined = new ArrayList<String>();
 
-    concat.clear();
-
-    while( (line = concatData.readLine()) != null ) {
+    readAllLines( conjoinedData.toPath() ).forEach( line -> {
       if( line.length() >= MIN_LEX_LENGTH ) {
-        concat.add( line.toLowerCase() );
+        conjoined.add( line.toLowerCase() );
       }
-    }
-  }
+    });
 
-  /**
-   * Returns the list of strings that have been concatenated together (such
-   * as those in a database column name).
-   */
-  private List<String> getConcat() {
-    return this.concat;
-  }
-
-  /**
-   * Returns a unique set of words, each having a probability calculated
-   * using the relative frequency of the word. (The word that appears most
-   * often in the dictionary's source corpus has a probability of 1.)
-   */
-  private Map<String, Double> getDictionary() {
-    return this.dictionary;
+    return conjoined;
   }
 
   /**
    * Returns the default probability when no value is given. This is
-   * likely an error in the lexicon that should be fixed.
+   * likely an error in the heuristics that should be fixed.
    */
   private Double getDefaultProbability() {
     return 0.0;

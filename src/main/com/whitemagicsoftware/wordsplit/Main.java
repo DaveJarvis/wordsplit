@@ -21,9 +21,10 @@
 package com.whitemagicsoftware.wordsplit;
 
 import java.io.File;
+import java.io.IOException;
 
 /**
- * Splits concatenated text into a sentence.
+ * Splits conjoined text into space-separated words.
  */
 public class Main {
   /**
@@ -39,15 +40,11 @@ public class Main {
    * Main application. Takes a lexicon (with probabilities) and list of
    * concatenated strings. Writes the split strings to standard output.
    */
-  public static void main( final String[] args ) {
-    final var ts = new TextSegmenter();
-
+  public static void main( final String[] args ) throws IOException {
     if( args.length == 2 ) {
-      try {
-        ts.split( new File( args[ 0 ] ), new File( args[ 1 ] ) );
-      } catch( final Exception e ) {
-        e.printStackTrace();
-      }
+      final var heuristics = new File( args[ 0 ] );
+      final var conjoined = new File( args[ 1 ] );
+      new TextSegmenter( heuristics, conjoined ).run();
     }
     else {
       out( Main.class.getCanonicalName() + " <lexicon> <conjoined>" );

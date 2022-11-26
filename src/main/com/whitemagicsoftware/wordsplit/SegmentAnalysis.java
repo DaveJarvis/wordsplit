@@ -29,13 +29,13 @@ import java.util.Map;
  * the solution is the most likely.
  */
 public class SegmentAnalysis {
-  private final List<Map.Entry<String, Double>> words;
+  private final List<Map.Entry<String, Double>> mWords;
 
-  private int wordsUsed;
-  private String remaining;
+  private int mWordsUsed;
+  private String mRemaining;
 
   public SegmentAnalysis( final List<Map.Entry<String, Double>> words ) {
-    this.words = words;
+    mWords = words;
   }
 
   /**
@@ -73,11 +73,11 @@ public class SegmentAnalysis {
   }
 
   public void setRemaining( final String remaining ) {
-    this.remaining = normalise( remaining );
+    mRemaining = normalise( remaining );
   }
 
   private String getRemaining() {
-    return this.remaining;
+    return mRemaining;
   }
 
   private double getWordCount() {
@@ -85,11 +85,11 @@ public class SegmentAnalysis {
   }
 
   public void setWordsUsed( final int wordsUsed ) {
-    this.wordsUsed = wordsUsed;
+    mWordsUsed = wordsUsed;
   }
 
   private double getWordsUsed() {
-    return this.wordsUsed;
+    return mWordsUsed;
   }
 
   /**
@@ -109,6 +109,6 @@ public class SegmentAnalysis {
   }
 
   private List<Map.Entry<String, Double>> getWords() {
-    return this.words;
+    return this.mWords;
   }
 }
